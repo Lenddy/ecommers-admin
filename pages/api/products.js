@@ -16,19 +16,31 @@ export default async function handle(req, res) {
 	}
 
 	if (method === "POST") {
-		const { name, price, description } = req.body;
-		const productDoc = await Product.create({ name, price, description });
+		const { name, price, description, images } = req.body;
+		const productDoc = await Product.create({
+			name,
+			price,
+			description,
+			images,
+		});
 		res.json(productDoc);
 	}
 
 	if (method === "PUT") {
-		const { name, price, description, _id } = req.body;
+		const { name, price, description, images, _id } = req.body;
 		const productDoc = await Product.updateOne(
 			{ _id: _id },
-			{ name, price, description }
+			{ name, price, description, images }
 			// { new: true, runValidators: true }
 		);
 		res.json(true, productDoc);
+	}
+
+	if (method === "DELETE") {
+		if (req.query?.id) {
+			await Product.deleteOne({ _id: req.query.id });
+			res.json(true);
+		}
 	}
 }
 

@@ -17,6 +17,7 @@ const ProductsSchema = new Schema(
 			type: String,
 			// require: [true,"this product needs a description"],
 		},
+		images: [{ type: String }],
 	},
 
 	{ timestamps: true }

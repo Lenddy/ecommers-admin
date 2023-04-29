@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 
+/* for images */
+
+img{
+  max-height: 100%;
+}
+
 /* for inputs */
 
 input,textarea{
@@ -47,6 +53,15 @@ table.basic tr td{
 
 table.basic a{
   @apply bg-blue-900 text-white text-sm p-1 px-2 rounded-md inline-flex mr-2;
+}
+
+/* for the buttons */
+.btn-red{
+  @apply bg-red-800 text-white py-2 px-6 rounded-md
+}
+
+.btn-default{
+  @apply bg-gray-500 text-white  py-2 px-6 rounded-md
 }
 
 
