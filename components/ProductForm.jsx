@@ -1,6 +1,6 @@
-import Layout from "@/components/layout";
+// import Layout from "@/components/layout";
 import { useEffect } from "react";
-import Link from "next/link";
+// import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -13,15 +13,26 @@ const ProductForm = ({
 	description: existingDescription,
 	price: existingPrice,
 	images: existingImages,
+	category: assignedCategory,
+	properties: assignedProperties,
 }) => {
 	const [name, setName] = useState(existingName || "");
+	const [category, setCategory] = useState(assignedCategory || "");
+	const [productProperties, setProductProperties] = useState(assignedProperties || {});
 	const [description, setDescription] = useState(existingDescription || "");
 	const [price, setPrice] = useState(existingPrice || "");
 	const [images, setImages] = useState(existingImages || []);
 	const [goToProducts, setGoToProducts] = useState(false);
 	const [uploadingFiles, setUploadingFiles] = useState(false);
+	const [categories, setCategories] = useState([]);
 	const router = useRouter();
-	const data = { name, description, price, images };
+	const data = { name, description, price, images, category ,properties:productProperties};
+
+	useEffect(() => {
+		axios.get("/api/categories").then((res) => {
+			setCategories(res.data);
+		});
+	}, []);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -59,6 +70,26 @@ const ProductForm = ({
 		setImages(images);
 	};
 
+	const propertiesToFill = [];
+	if (categories.length > 0 &&  category) {
+		let catInfo = categories.find(({ _id }) => _id === category)
+		propertiesToFill.push(...catInfo.properties)
+
+		while(catInfo?.parent?._id) {
+			const parentCat = categories.find(({ _id }) => _id === catInfo?.parent?._id)
+			propertiesToFill.push(...parentCat.properties);
+			catInfo = parentCat;
+		}
+	}
+
+	const changeProductProp = (propName, Value) => {
+		setProductProperties(prev=>{
+			const newProductProps = {...prev};
+			newProductProps[propName] = Value;
+			return newProductProps;
+		})
+	}
+
 	return (
 		<div>
 			<form onSubmit={handleSubmit}>
@@ -69,6 +100,38 @@ const ProductForm = ({
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 				/>
+
+				<label> Category </label>
+				<select
+					value={category}
+					onChange={(e) => setCategory(e.target.value)}
+				>
+					<option value="">uncategorized</option>
+					{categories.length > 0 &&
+						categories.map((c) => (
+							<option value={c._id} key={c._id}>
+								{c.name}
+							</option>
+						))}
+				</select>
+
+				{
+					propertiesToFill.length > 0 && propertiesToFill.map(p=>(
+						<div className="flex gap-1">
+							<div>{p.name}</div>
+							<select value={productProperties[p.name]}  onChange={(e)=> changeProductProp(p.name,e.target.value) } 
+
+							>
+								{
+									p.values.map((v,idx)=>(
+										<option key={idx} value={v}>{v}</option>
+									))
+								}
+							</select>
+						</div>
+					))
+				}
+
 
 				<label> Photos </label>
 				<div className=" mb-2 flex flex-wrap gap-2">
