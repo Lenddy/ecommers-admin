@@ -6,10 +6,7 @@ import { authOptions, isAdminRequest } from "./auth/[...nextauth]";
 export default async function handle(req, res) {
 	const { method } = req;
 	await mongooseConnect();
-
 	await isAdminRequest(req, res);
-
-	// console.log("session", session);
 
 	if (method === "GET") {
 		res.json(await Category.find().populate("parent"));

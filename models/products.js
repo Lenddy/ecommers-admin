@@ -4,13 +4,13 @@ const ProductsSchema = new Schema(
 	{
 		name: {
 			type: String,
-			require: [true, "this product needs a name"],
+			required: [true, "this product needs a name"],
 			minLength: [2, "title must be at least 2 characters long"],
 		},
 
 		price: {
 			type: Number,
-			require: [true, "this product needs a price"],
+			required: [true, "this product needs a price"],
 		},
 
 		description: {
@@ -18,8 +18,13 @@ const ProductsSchema = new Schema(
 			// require: [true,"this product needs a description"],
 		},
 		images: [{ type: String }],
-		category: { type: mongoose.Types.ObjectId, ref: "Category" },
-		properties: {type:Object},
+		category: {
+			type: mongoose.Types.ObjectId,
+			ref: "Category",
+			required: false,
+			default: null,
+		},
+		properties: { type: Object },
 	},
 	{ timestamps: true }
 );

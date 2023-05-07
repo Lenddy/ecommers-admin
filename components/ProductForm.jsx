@@ -1,8 +1,5 @@
-// import Layout from "@/components/layout";
-import { useEffect } from "react";
-// import Link from "next/link";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useState } from "react";
 import { useRouter } from "next/router";
 import Spinner from "@/components/spinner";
 import { ReactSortable } from "react-sortablejs";
@@ -17,8 +14,10 @@ const ProductForm = ({
 	properties: assignedProperties,
 }) => {
 	const [name, setName] = useState(existingName || "");
-	const [category, setCategory] = useState(assignedCategory || "");
-	const [productProperties, setProductProperties] = useState(assignedProperties || {});
+	const [category, setCategory] = useState(assignedCategory || null);
+	const [productProperties, setProductProperties] = useState(
+		assignedProperties || {}
+	);
 	const [description, setDescription] = useState(existingDescription || "");
 	const [price, setPrice] = useState(existingPrice || "");
 	const [images, setImages] = useState(existingImages || []);
@@ -26,7 +25,14 @@ const ProductForm = ({
 	const [uploadingFiles, setUploadingFiles] = useState(false);
 	const [categories, setCategories] = useState([]);
 	const router = useRouter();
-	const data = { name, description, price, images, category ,properties:productProperties};
+	const data = {
+		name,
+		description,
+		price,
+		images,
+		category,
+		properties: productProperties,
+	};
 
 	useEffect(() => {
 		axios.get("/api/categories").then((res) => {
@@ -71,24 +77,26 @@ const ProductForm = ({
 	};
 
 	const propertiesToFill = [];
-	if (categories.length > 0 &&  category) {
-		let catInfo = categories.find(({ _id }) => _id === category)
-		propertiesToFill.push(...catInfo.properties)
+	if (categories.length > 0 && category) {
+		let catInfo = categories.find(({ _id }) => _id === category);
+		propertiesToFill.push(...catInfo.properties);
 
-		while(catInfo?.parent?._id) {
-			const parentCat = categories.find(({ _id }) => _id === catInfo?.parent?._id)
+		while (catInfo?.parent?._id) {
+			const parentCat = categories.find(
+				({ _id }) => _id === catInfo?.parent?._id
+			);
 			propertiesToFill.push(...parentCat.properties);
 			catInfo = parentCat;
 		}
 	}
 
 	const changeProductProp = (propName, Value) => {
-		setProductProperties(prev=>{
-			const newProductProps = {...prev};
+		setProductProperties((prev) => {
+			const newProductProps = { ...prev };
 			newProductProps[propName] = Value;
 			return newProductProps;
-		})
-	}
+		});
+	};
 
 	return (
 		<div>
@@ -115,23 +123,24 @@ const ProductForm = ({
 						))}
 				</select>
 
-				{
-					propertiesToFill.length > 0 && propertiesToFill.map(p=>(
+				{propertiesToFill.length > 0 &&
+					propertiesToFill.map((p) => (
 						<div className="flex gap-1">
 							<div>{p.name}</div>
-							<select value={productProperties[p.name]}  onChange={(e)=> changeProductProp(p.name,e.target.value) } 
-
-							>
-								{
-									p.values.map((v,idx)=>(
-										<option key={idx} value={v}>{v}</option>
-									))
+							<select
+								value={productProperties[p.name]}
+								onChange={(e) =>
+									changeProductProp(p.name, e.target.value)
 								}
+							>
+								{p.values.map((v, idx) => (
+									<option key={idx} value={v}>
+										{v}
+									</option>
+								))}
 							</select>
 						</div>
-					))
-				}
-
+					))}
 
 				<label> Photos </label>
 				<div className=" mb-2 flex flex-wrap gap-2">
@@ -153,7 +162,6 @@ const ProductForm = ({
 					</ReactSortable>
 					{uploadingFiles && (
 						<div className="h-24 bg-gray-200 p-1 flex items-center rounded-md">
-							{" "}
 							<Spinner />
 						</div>
 					)}

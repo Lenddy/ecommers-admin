@@ -5,7 +5,6 @@ import Logo from "./logo";
 
 export default function Layout({ children }) {
 	const [showNav, setShowNav] = useState(false);
-
 	const { data: session } = useSession();
 	if (!session) {
 		console.log(session);
@@ -49,13 +48,8 @@ export default function Layout({ children }) {
 			<div className=" flex">
 				<Nav show={showNav} />
 				<div className="flex-grow  bg-white  mt-2 mr-2  mb-0 rounded-lg p-4">
-					{/* logged in {session.user.email} */}
 					{children}
 				</div>
-				{/* <img src={session.user.image} alt="l" /> */}
-				{/* <button onClick={() => signOut()} className=" bg-red-400">
-				sign out
-			</button> */}
 			</div>
 		</div>
 	);

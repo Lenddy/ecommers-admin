@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
 import { signOut } from "next-auth/react";
 import Logo from "./logo";
 
