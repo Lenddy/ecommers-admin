@@ -6,6 +6,7 @@ const OrdersPage = () => {
 		<Layout>
 			<h1>Orders</h1>
 			<table className="basic"></table>
+			<h1>hello</h1>
 		</Layout>
 	);
 };
