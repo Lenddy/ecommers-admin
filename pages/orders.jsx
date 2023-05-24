@@ -15,27 +15,35 @@ const OrdersPage = () => {
 			<table className="basic">
 				<thead>
 					<tr>
-						<th>ID</th>
+						<th>Date</th>
 						<th>Recipient</th>
 						<th>Products</th>
 					</tr>
-					<tbody>
-						{orders.length > 0 &&
-							orders.map((order) => (
-								<tr>
-									<td>{order._id}</td>
-									<td>
-										{order.name} {order.email} <br />
-										<br />
-										{order.city} {order.postalCode}{" "}
-										{order.country} <br />
-										{order.streetAddress}
-									</td>
-									<td>hello</td>
-								</tr>
-							))}
-					</tbody>
 				</thead>
+				<tbody>
+					{orders.length > 0 &&
+						orders.map((order) => (
+							<tr>
+								<td>{order.createdAt}</td>
+								<td>
+									{order.name} {order.email} <br />
+									<br />
+									{order.city} {order.postalCode}
+									{order.country} <br />
+									{order.streetAddress}
+								</td>
+								<th>
+									{order.line_items.map((l) => (
+										<>
+											{l?.price_data?.product_data?.name}{" "}
+											X {l.quantity}
+											<br />
+										</>
+									))}
+								</th>
+							</tr>
+						))}
+				</tbody>
 			</table>
 		</Layout>
 	);
